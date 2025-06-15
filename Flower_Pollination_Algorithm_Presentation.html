@@ -1,0 +1,536 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flower Pollination Algorithm - Interactive Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .presentation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .slide {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 3em;
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            margin-bottom: 25px;
+            color: #FFD700;
+            border-bottom: 3px solid #FFD700;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #FFA500;
+        }
+
+        p, li {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            border-left: 4px solid #FFD700;
+        }
+
+        .algorithm-steps {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid #FFD700;
+        }
+
+        .download-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            padding: 12px 24px;
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .flower-icon {
+            display: inline-block;
+            font-size: 1.5em;
+            margin-right: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .highlight {
+            background: rgba(255, 215, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <a href="#" class="download-btn" onclick="downloadPresentation()">📥 Download as HTML</a>
+    
+    <div class="slide-counter">
+        <span id="current-slide">10</span> / <span id="total-slides">10</span>
+    </div>
+
+    <div class="presentation-container">
+        <!-- Slide 1: Title -->
+        <div class="slide">
+            <h1><span class="flower-icon">🌸</span>Flower Pollination Algorithm</h1>
+            <div style="text-align: center; margin-top: 50px;">
+                <h3>Bio-Inspired Optimization for Autonomous Systems</h3>
+                <p style="font-size: 1.4em; margin-top: 40px;">A Nature-Inspired Metaheuristic Algorithm</p>
+                <p style="font-size: 1.1em; margin-top: 30px; opacity: 0.8;">Based on the pollination process of flowering plants</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Introduction -->
+        <div class="slide">
+            <h2>🌺 What is Flower Pollination Algorithm?</h2>
+            <p>The Flower Pollination Algorithm (FPA) is a <span class="highlight">nature-inspired optimization algorithm</span> developed by Xin-She Yang in 2012.</p>
+            
+            <h3>Key Concepts:</h3>
+            <ul>
+                <li><strong>Global Pollination:</strong> Cross-pollination carried by pollinators (bees, birds, wind)</li>
+                <li><strong>Local Pollination:</strong> Self-pollination within the same flower or nearby flowers</li>
+                <li><strong>Flower Constancy:</strong> Pollinators tend to visit the same type of flower</li>
+                <li><strong>Probability Switch:</strong> Balance between global and local pollination</li>
+            </ul>
+
+            <div class="example-box">
+                <h3>🐝 Real-World Inspiration</h3>
+                <p>In nature, flowers use various strategies to attract pollinators and ensure successful reproduction. FPA mimics this process to solve optimization problems.</p>
+            </div>
+        </div>
+
+        <!-- Slide 3: Algorithm Rules -->
+        <div class="slide">
+            <h2>📋 Algorithm Rules</h2>
+            <div class="algorithm-steps">
+                <h3>Four Fundamental Rules:</h3>
+                <ol style="font-size: 1.1em; line-height: 1.8;">
+                    <li><strong>Rule 1:</strong> Global pollination process carries pollen in a Lévy flight with pollinators moving in a power-law step-size distribution</li>
+                    <li><strong>Rule 2:</strong> Local pollination corresponds to both abiotic and self-pollination</li>
+                    <li><strong>Rule 3:</strong> Flower constancy means pollinators prefer similar flowers (reproduction probability proportional to similarity)</li>
+                    <li><strong>Rule 4:</strong> Global and local pollination are controlled by a switching probability p ∈ [0,1]</li>
+                </ol>
+            </div>
+
+            <p>These rules form the foundation for the mathematical model that drives the optimization process.</p>
+        </div>
+
+        <!-- Slide 4: Mathematical Model -->
+        <div class="slide">
+            <h2>🔢 Mathematical Formulation</h2>
+            
+            <h3>Global Pollination (Cross-pollination):</h3>
+            <div class="code-block">
+x_i^(t+1) = x_i^t + L(λ) × (g* - x_i^t)
+            </div>
+            <p>Where:</p>
+            <ul>
+                <li>x_i^t = pollen i (solution vector) at iteration t</li>
+                <li>g* = current best solution</li>
+                <li>L(λ) = Lévy flight step size</li>
+            </ul>
+
+            <h3>Local Pollination (Self-pollination):</h3>
+            <div class="code-block">
+x_i^(t+1) = x_i^t + ε × (x_j^t - x_k^t)
+            </div>
+            <p>Where:</p>
+            <ul>
+                <li>ε = random number from uniform distribution [0,1]</li>
+                <li>x_j^t, x_k^t = different flowers from same species</li>
+            </ul>
+        </div>
+
+        <!-- Slide 5: Algorithm Steps -->
+        <div class="slide">
+            <h2>⚙️ Algorithm Steps</h2>
+            <div class="algorithm-steps">
+                <h3>FPA Implementation Process:</h3>
+                <ol style="font-size: 1.1em; line-height: 1.8;">
+                    <li><strong>Initialize:</strong> Population of n flowers with random solutions</li>
+                    <li><strong>Evaluate:</strong> Find the best solution g* in the initial population</li>
+                    <li><strong>Set parameters:</strong> Switch probability p (typically 0.8)</li>
+                    <li><strong>For each iteration:</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>For each flower in population:</li>
+                            <li>Generate random number r ∈ [0,1]</li>
+                            <li>If r &lt; p: Apply global pollination</li>
+                            <li>Else: Apply local pollination</li>
+                            <li>Evaluate new solutions</li>
+                            <li>Update if better than previous</li>
+                        </ul>
+                    </li>
+                    <li><strong>Update:</strong> Find current best solution</li>
+                    <li><strong>Repeat:</strong> Until termination criteria met</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 6: Example Problem -->
+        <div class="slide">
+            <h2>💡 Example: Function Optimization</h2>
+            <div class="example-box">
+                <h3>Problem: Minimize Sphere Function</h3>
+                <div class="code-block">
+f(x) = Σ(x_i²) where i = 1 to n
+Minimize f(x) for x ∈ [-5.12, 5.12]^n
+                </div>
+            </div>
+
+            <h3>FPA Solution Approach:</h3>
+            <ul>
+                <li><strong>Population:</strong> 25 flowers (solution vectors)</li>
+                <li><strong>Dimensions:</strong> n = 10 (10-dimensional problem)</li>
+                <li><strong>Switch probability:</strong> p = 0.8</li>
+                <li><strong>Iterations:</strong> 1000</li>
+            </ul>
+
+            <div class="code-block">
+# Pseudocode for Sphere Function Optimization
+Initialize 25 random flowers in [-5.12, 5.12]^10
+For t = 1 to 1000:
+    For each flower i:
+        if random() &lt; 0.8:
+            # Global pollination
+            flower[i] = flower[i] + levy_flight() * (best - flower[i])
+        else:
+            # Local pollination  
+            j, k = random_flowers()
+            flower[i] = flower[i] + random() * (flower[j] - flower[k])
+        
+        # Evaluate and update if better
+        if f(flower[i]) &lt; f(current_best):
+            current_best = flower[i]
+            </div>
+        </div>
+
+        <!-- Slide 7: Applications in Autonomous Systems -->
+        <div class="slide">
+            <h2>🤖 Applications in Autonomous Systems</h2>
+            
+            <h3>1. Path Planning for Autonomous Vehicles</h3>
+            <ul>
+                <li>Optimize routes considering traffic, obstacles, and fuel consumption</li>
+                <li>Multi-objective optimization for time, safety, and efficiency</li>
+            </ul>
+
+            <h3>2. Drone Swarm Coordination</h3>
+            <ul>
+                <li>Formation control and collision avoidance</li>
+                <li>Task allocation and resource optimization</li>
+            </ul>
+
+            <h3>3. Robot Motion Planning</h3>
+            <ul>
+                <li>Joint trajectory optimization for manipulators</li>
+                <li>Dynamic obstacle avoidance in real-time</li>
+            </ul>
+
+            <h3>4. Sensor Network Optimization</h3>
+            <ul>
+                <li>Optimal sensor placement for maximum coverage</li>
+                <li>Energy-efficient routing protocols</li>
+            </ul>
+        </div>
+
+        <!-- Slide 8: Autonomous Vehicle Example -->
+        <div class="slide">
+            <h2>🚗 Case Study: Autonomous Vehicle Path Planning</h2>
+            
+            <div class="example-box">
+                <h3>Problem Setup:</h3>
+                <p>Find optimal path for autonomous vehicle from point A to B considering:</p>
+                <ul>
+                    <li>Dynamic obstacles (other vehicles, pedestrians)</li>
+                    <li>Traffic signals and road conditions</li>
+                    <li>Fuel consumption and travel time</li>
+                    <li>Safety constraints and comfort</li>
+                </ul>
+            </div>
+
+            <h3>FPA Implementation:</h3>
+            <div class="code-block">
+# Each flower represents a complete path
+# Fitness function considers multiple objectives
+def fitness_function(path):
+    travel_time = calculate_time(path)
+    fuel_cost = calculate_fuel(path)
+    safety_score = assess_safety(path)
+    comfort_index = measure_comfort(path)
+    
+    return weighted_sum(travel_time, fuel_cost, 
+                       safety_score, comfort_index)
+
+# Global pollination explores diverse routes
+# Local pollination fine-tunes existing paths
+            </div>
+
+            <p><strong>Result:</strong> FPA finds near-optimal paths that balance all objectives, adapting to real-time traffic conditions.</p>
+        </div>
+
+        <!-- Slide 9: Advantages & Limitations -->
+        <div class="slide">
+            <h2>⚖️ Advantages &amp; Limitations</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div>
+                    <h3 style="color: #90EE90;">✅ Advantages</h3>
+                    <ul>
+                        <li>Simple implementation</li>
+                        <li>Few parameters to tune</li>
+                        <li>Good exploration capability</li>
+                        <li>Effective for continuous optimization</li>
+                        <li>Balances global and local search</li>
+                        <li>Suitable for multi-modal problems</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 style="color: #FFB6C1;">⚠️ Limitations</h3>
+                    <ul>
+                        <li>Slower convergence for some problems</li>
+                        <li>Lévy flight parameter sensitivity</li>
+                        <li>Limited theoretical analysis</li>
+                        <li>May struggle with high-dimensional spaces</li>
+                        <li>Switch probability requires tuning</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="example-box" style="margin-top: 30px;">
+                <h3>💡 Best Practices for Autonomous Systems</h3>
+                <ul>
+                    <li>Combine with local search methods for fine-tuning</li>
+                    <li>Use adaptive parameters for dynamic environments</li>
+                    <li>Implement parallel processing for real-time applications</li>
+                    <li>Consider hybrid approaches with other algorithms</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 10: Conclusion -->
+        <div class="slide active">
+            <h2>🎯 Conclusion &amp; Future Directions</h2>
+            
+            <h3>Key Takeaways:</h3>
+            <ul>
+                <li>FPA is a <span class="highlight">powerful bio-inspired algorithm</span> suitable for autonomous systems</li>
+                <li>Effective balance between exploration and exploitation</li>
+                <li>Particularly useful for multi-objective optimization problems</li>
+                <li>Applications span robotics, vehicle systems, and sensor networks</li>
+            </ul>
+
+            <h3>Future Research Directions:</h3>
+            <ul>
+                <li><strong>Adaptive FPA:</strong> Self-tuning parameters for dynamic environments</li>
+                <li><strong>Multi-objective FPA:</strong> Enhanced Pareto front exploration</li>
+                <li><strong>Hybrid Algorithms:</strong> Combining FPA with machine learning</li>
+                <li><strong>Real-time Implementation:</strong> Hardware acceleration and parallel processing</li>
+            </ul>
+
+            <div class="example-box">
+                <h3>🚀 Next Steps</h3>
+                <p>Consider implementing FPA for your specific autonomous system requirements. Start with simple benchmark problems and gradually adapt to your domain-specific constraints.</p>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <h2 style="color: #FFD700;">Thank You! 🌸</h2>
+                <p style="font-size: 1.2em;">Questions &amp; Discussion</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="prev-btn" onclick="previousSlide()">← Previous</button>
+        <button id="next-btn" onclick="nextSlide()" disabled="">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+            
+            // Update button states
+            document.getElementById('prev-btn').disabled = currentSlide === 0;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+
+        function downloadPresentation() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Flower_Pollination_Algorithm_Presentation.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+
+</body></html>
